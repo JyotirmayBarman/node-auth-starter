@@ -1,0 +1,21 @@
+{
+  "name": "auth-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JyotirmayBarman/node-auth-starter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JyotirmayBarman/node-auth-starter/issues"
+  },
+  "homepage": "https://github.com/JyotirmayBarman/node-auth-starter#readme"
+}
