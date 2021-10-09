@@ -1,10 +1,12 @@
 const express = require('express');
 const mainRouter = require('./routes/main.router');
+const cookie = require('cookie-parser');
 
 const { errorHandler } = require('./middlewares/globalErrorHandler')
 
 const app = express();
 app.use(express.json());
+app.use(cookie());
 
 app.use(mainRouter);
 
