@@ -8,6 +8,7 @@ const authValidator = require('../../validators/auth.validator')
 authRouter.post('/register', authValidator.validateRegistrationInput, errorResolver(authController.httpPostRegister));
 authRouter.post('/verify/:token', authValidator.validateEmailVerificationToken, errorResolver(authController.httpPostVerifyEmail));
 authRouter.post('/login', authValidator.validateLoginInput, errorResolver(authController.httpPostLogin));
+authRouter.post('/resend', authValidator.validateEmailInput, errorResolver(authController.httpPostResendVerificationLink));
 
 
 module.exports = authRouter;
