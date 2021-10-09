@@ -1,0 +1,169 @@
+/********************************************************************************************************* 
+ * User input data should be validated beforehand with validator middllwares in router
+ * Which means here all the data are clean and no need to validate again
+ * 
+ * If We also use "global error handler" then we don't need to use 'try-catch' anywhre in this controller 
+ **********************************************************************************************************/
+
+
+
+
+/* handles registration */
+async function httpPostRegister(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract user data from req.body
+    // 2. Check if user already exists in the DB
+    // 3. If exists return error
+    // 4. else hash the password using bcryptjs
+    // 5. create a new user in the DB 
+    // 6. create jwt verification token & save it to the DB to expire in 24 hours
+    // 7. create verification link & sent to user's email & return success
+}
+
+
+/* handles logging in */
+async function httpPostLogin(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract user data from req.body
+    // 2. Check if user exists in the DB
+    // 3. If doesn't then return error
+    // 4. else check if the password matches
+    // 5. If doesn't match return error
+    // 6. else if remember option is true
+    // 7. Then create a refresh token & store in redis DB which will (never or take much time) to expire
+    // 8. send a strict same-site cookie to the browser with the token
+
+
+}
+
+/* handles email validation after registration */
+async function httpPostVerifyEmail(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract verification token from request parameters
+    // 2. Check if verify token exists in the DB with the unverified user
+    // 3. If doesn't then return error
+    // 4. else check if the token is expired or not with jwt 
+    // 5. if expired then return error
+    // 5. otherwise set the user as verified & remove verifytoken from DB & return success
+
+
+
+}
+
+/* handles resending verification link to email */
+async function httpPostResendVerificationLink(req, res) {
+    //****** ALGORITHM*******//
+    // 1. extract email from req.body
+    // 2. if already verified  then return error
+    // 3. Otherwise generate verification token again & set it to expire in 24 hours
+    // 4. construct the link and resend it to the user's email
+}
+
+/* handles logging out */
+async function httpPostLogout(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract userId from req.userId as authentication check is handled by a verifyRefreshToken middleware
+    //// 2. and it sets userId to req for us
+    //// 3. If the userId exists in redis DB where we keep track of logged in users then
+    // 2. remove userId from the redis DB & return a  cookie with token = null 
+
+}
+
+/* handles sending pw reset link to the user email*/
+async function httpPostSendPasswordResetLink(req, res) {
+    //****** ALGORITHM*******//
+    // 1. extract email from req.body
+    // 2. generate a resetToken which will expire in 24 hours & save it to DB
+    // 3. construct the link and send it to the user's email
+
+
+}
+
+
+/* handles resetting password with reset token */
+async function httpPostResetPassword(req, res) {
+    //****** ALGORITHM*******//
+    // 1. extract reset token,password from request parameters & body respectively
+    // 2. Check if reset token exists in the DB
+    // 3. If doesn't then return error
+    // 4. else check if the token is expired or not with jwt 
+    // 5. if expired then return error
+    // 5. otherwise encrypt the password with bcryptjs and set new password
+
+
+
+}
+
+/* returns user details if logged in */
+async function httpGetLoggedInUser(req, res) {
+    //****** ALGORITHM*******//
+    // 1. extract userId from req.userId as authentication check is handled by a verifyRefreshToken middleware
+    //// 2. and it sets userId to req for us
+    //// 3. If the userId exists in redis DB where we keep track of logged in users then
+    // 2. find user details using userId 
+    // 3. If details found retun user details with success
+    // 4. Else return error
+
+}
+
+/* handles updation of profile  */
+async function httpPatchUpdateProfile(req, res) {
+    //****** ALGORITHM*******//
+    // 1. extract userId from req.userId as authentication check is handled by a verifyRefreshToken middleware
+    //// 2. and it sets userId to req for us
+    //// 3. If the userId exists in redis DB where we keep track of logged in users then
+    // 2. find user details using userId 
+    // 3. If details found then extract user update fields from req.body Else return error
+    // 4. if password needs to be updated make sure old pass matches 
+    // 5. if email needs to be updated then set email to newEmail in DB & generate verify token with 24 hours of expiry
+    // 6. Then send the verfication link to new email
+    // 7. change other details without any condition
+    // 8. Lastly save the user & return success
+
+
+}
+
+/* handles email updation if anyone request for */
+async function httpPatchUpdateEmailVerify(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract verification token from request parameters
+    // 2. Check if verify token exists in the DB with the newEmail option
+    // 3. If doesn't then return error
+    // 4. else check if the token is expired or not with jwt 
+    // 5. if expired then return error
+    // 5. otherwise set the newEmail as user's email & remove verifytoken from DB & return success
+
+
+}
+
+
+
+//* Other helper functions *//
+
+/* Generates jwt refresh token */
+function generateRefreshToken(data, expiry) {
+    let token;
+    if (expiry) {
+        token = jwt.sign({ data }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: expiry });
+    } else {
+        token = jwt.sign({ data }, process.env.REFRESH_TOKEN_SECRET);
+    }
+    return token;
+}
+
+/* Generates jwt email verification token */
+function generateVerificationToken(data) {
+    const token = jwt.sign({ data }, process.env.VERIFY_EMAIL_SECRET, { expiresIn: '24h' });
+    return token;
+}
+
+
+
+module.exports = {
+    httpPostRegister
+}
