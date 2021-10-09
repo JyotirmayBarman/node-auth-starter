@@ -36,6 +36,24 @@ function validateEmailVerificationToken(req, res, next) {
     }
 }
 
+function validateLoginInput(req,res,next) {
+    const { email, password, remember } = req.body;
+
+    const loginInputSchema = validator.object({
+        email: validator.string().email().required().label('Email'),
+        password: validator.string().min(6).max(1024).required().label('Password'),
+        remember: validator.boolean().default(false).label('Remember')
+    });
+
+    const valid = loginInputSchema.validate({ email, password, remember });
+
+    if (checkValidity(valid)) {
+        return next();
+    }
+
+    return res.status(400).json(error)
+}
+
 
 function checkValidity(valid) {
     if (valid.error) {
@@ -50,5 +68,6 @@ function checkValidity(valid) {
 
 module.exports = {
     validateRegistrationInput,
-    validateEmailVerificationToken
+    validateEmailVerificationToken,
+    validateLoginInput
 }
