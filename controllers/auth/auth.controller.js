@@ -51,7 +51,30 @@ async function httpPostRegister(req, res) {
     //TODO: SEND ACTUAL MAIL for now jus log to the console
     console.log(message);
 
-    return res.status(201).json({ meaage: "Successfully registered" });
+    return res.status(201).json({ message: "Successfully registered" });
+}
+
+
+/* handles email validation after registration */
+async function httpPostVerifyEmail(req, res) {
+
+    //****** ALGORITHM*******//
+    // 1. extract verification token from request parameters
+    // 2. Check if verify token exists in the DB with the unverified user
+    // 3. If doesn't then return error
+    // 4. otherwise the token is already checked in the validator middleware for its expiry so it's not expired if req reaches here
+    // 5. set the user as verified & remove verifytoken from DB & return success
+    const token = req.params.token;
+    const user = await User.findOne({ verifyToken: token, verified: false });
+    if (!user) {
+        return res.status(404).json({ error: "Invalid verification link or it maybe expired" })
+    }
+    user.verifyToken = null;
+    user.verified = true;
+    await user.save();
+    return res.status(200).json({
+        message: "Email id successfully verified"
+    });
 }
 
 
@@ -67,21 +90,6 @@ async function httpPostLogin(req, res) {
     // 6. else if remember option is true
     // 7. Then create a refresh token & store in redis DB which will (never or take much time) to expire
     // 8. send a strict same-site cookie to the browser with the token
-
-
-}
-
-/* handles email validation after registration */
-async function httpPostVerifyEmail(req, res) {
-
-    //****** ALGORITHM*******//
-    // 1. extract verification token from request parameters
-    // 2. Check if verify token exists in the DB with the unverified user
-    // 3. If doesn't then return error
-    // 4. else check if the token is expired or not with jwt 
-    // 5. if expired then return error
-    // 5. otherwise set the user as verified & remove verifytoken from DB & return success
-
 
 
 }
@@ -198,5 +206,6 @@ function generateVerificationToken(data) {
 
 
 module.exports = {
-    httpPostRegister
+    httpPostRegister,
+    httpPostVerifyEmail
 }

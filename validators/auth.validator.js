@@ -1,4 +1,5 @@
 const validator = require('joi');
+const jwt = require('jsonwebtoken');
 
 let error = {};
 function validateRegistrationInput(req, res, next) {
@@ -14,12 +15,25 @@ function validateRegistrationInput(req, res, next) {
             'any.only': 'Confirmation password must match password'
         })
     });
-    const valid = registerInputSchema.validate({ firstName, lastName, email, password, confirmPassword },{ abortEarly: true });
+    const valid = registerInputSchema.validate({ firstName, lastName, email, password, confirmPassword }, { abortEarly: true });
     console.log(valid);
     if (checkValidity(valid)) {
         return next();
     }
     return res.status(400).json(error)
+}
+
+function validateEmailVerificationToken(req, res, next) {
+    const token = req.params.token;
+    try {
+        const valid = jwt.verify(token, process.env.VERIFY_EMAIL_SECRET);
+        if (valid) {
+            return next();
+        }
+        return res.status(400).json({ message: "Invalid verification link or it maybe expired" })
+    } catch (error) {
+        return res.status(400).json({ message: "Invalid verification link or it maybe expired" })
+    }
 }
 
 
@@ -35,5 +49,6 @@ function checkValidity(valid) {
 }
 
 module.exports = {
-    validateRegistrationInput
+    validateRegistrationInput,
+    validateEmailVerificationToken
 }

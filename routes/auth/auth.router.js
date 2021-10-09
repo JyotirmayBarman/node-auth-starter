@@ -5,7 +5,8 @@ const { errorResolver } = require('../../middlewares/globalErrorHandler');
 const authValidator = require('../../validators/auth.validator')
 
 
-authRouter.post('/register',authValidator.validateRegistrationInput,errorResolver(authController.httpPostRegister));
+authRouter.post('/register', authValidator.validateRegistrationInput, errorResolver(authController.httpPostRegister));
+authRouter.post('/verify/:token', authValidator.validateEmailVerificationToken, errorResolver(authController.httpPostVerifyEmail));
 
 
 module.exports = authRouter;
