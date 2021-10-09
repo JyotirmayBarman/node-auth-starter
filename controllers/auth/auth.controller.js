@@ -172,7 +172,15 @@ async function httpPostLogout(req, res) {
     //// 2. and it sets userId to req for us
     //// 3. If the userId exists in redis DB where we keep track of logged in users then
     // 2. remove userId from the redis DB & return a  cookie with token = null 
-
+    redis.DEL(req.userId);
+    return res.status(200).cookie('token', 'null', {
+        sameSite: 'strict',
+        path: '/',
+        httpOnly: true,
+        secure: false
+    }).json({
+        message: "Logged out successfully"
+    });
 }
 
 /* handles sending pw reset link to the user email*/
@@ -270,5 +278,6 @@ module.exports = {
     httpPostRegister,
     httpPostVerifyEmail,
     httpPostLogin,
-    httpPostResendVerificationLink
+    httpPostResendVerificationLink,
+    httpPostLogout
 }

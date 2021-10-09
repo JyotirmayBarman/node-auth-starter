@@ -2,6 +2,7 @@ const express = require('express');
 const authRouter = express.Router();
 const authController = require('../../controllers/auth/auth.controller');
 const { errorResolver } = require('../../middlewares/globalErrorHandler');
+const verifyRefreshToken = require('../../middlewares/verifyRefreshToken');
 const authValidator = require('../../validators/auth.validator')
 
 
@@ -9,6 +10,7 @@ authRouter.post('/register', authValidator.validateRegistrationInput, errorResol
 authRouter.post('/verify/:token', authValidator.validateEmailVerificationToken, errorResolver(authController.httpPostVerifyEmail));
 authRouter.post('/login', authValidator.validateLoginInput, errorResolver(authController.httpPostLogin));
 authRouter.post('/resend', authValidator.validateEmailInput, errorResolver(authController.httpPostResendVerificationLink));
+authRouter.post('/logout', verifyRefreshToken, errorResolver(authController.httpPostLogout));
 
 
 module.exports = authRouter;
