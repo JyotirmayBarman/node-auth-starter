@@ -190,18 +190,18 @@ async function httpPostSendPasswordResetLink(req, res) {
     // 2. generate a resetToken which will expire in 24 hours & save it to DB
     // 3. construct the link and send it to the user's email
     const { email } = req.body;
-    const user = await User.findOne({ email ,verified:true });
+    const user = await User.findOne({ email, verified: true });
     if (!user) {
         return res.status(404).json({
-            error:  "Invalid email address"
+            error: "Invalid email address"
         });
     }
     user.resetToken = generateVerificationToken(email);
     await user.save();
-    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.resetToken;
+    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/reset/' + user.resetToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
-        to: {name,email},
+        to: { name, email },
         subject: 'Reset password ✔',
         html: `<h1>Hello ${name},</h1><br>
                 Reset your password by clicking this link
@@ -209,13 +209,13 @@ async function httpPostSendPasswordResetLink(req, res) {
     };
     console.log(message);
     return res.status(200).json({
-        message:"Password reset link sent successfully"
+        message: "Password reset link sent successfully"
     })
 }
 
 
 /* handles resetting password with reset token */
-async function httpPostResetPassword(req, res) {
+async function httpPatchResetPassword(req, res) {
     //****** ALGORITHM*******//
     // 1. extract reset token,password from request parameters & body respectively
     // 2. Check if reset token exists in the DB
@@ -223,7 +223,18 @@ async function httpPostResetPassword(req, res) {
     // 4. else check if the token is expired or not with jwt 
     // 5. if expired then return error
     // 5. otherwise encrypt the password with bcryptjs and set new password
-
+    const token = req.params.token;
+    const { password } = req.body
+    const user = await User.findOne({ resetToken: token, verified: true });
+    if (!user) {
+        return res.status(404).json({ error: "Invalid password reset link or it maybe expired" })
+    }
+    user.resetToken = null;
+    user.password = await bcrypt.hash(password, 12);
+    await user.save();
+    return res.status(200).json({
+        message: "Password reset successful"
+    });
 
 
 }
@@ -300,5 +311,6 @@ module.exports = {
     httpPostLogin,
     httpPostResendVerificationLink,
     httpPostLogout,
-    httpPostSendPasswordResetLink
+    httpPostSendPasswordResetLink,
+    httpPatchResetPassword
 }
