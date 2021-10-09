@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodem server.js",
     "dev": "nodemon server.js",
-    "install": "echo 'node_modules\n.env\n.gitignore' > .gitignore;touch .env"
+    "install": "echo \"node_modules\n.env\n.gitignore\" > .gitignore;echo \"PORT=8000\nMONGO_URL=mongodb://localhost:27017/node_auth\nREDIS_PORT=6379\nREDIS_HOST='localhost'\nREFRESH_TOKEN_SECRET=M@iR3fr3sHt0KenS3cR3T\nVERIFY_EMAIL_SECRET=v3riFYem@@iLsssecret\" > .env"
   },
   "repository": {
     "type": "git",
