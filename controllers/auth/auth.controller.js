@@ -189,8 +189,28 @@ async function httpPostSendPasswordResetLink(req, res) {
     // 1. extract email from req.body
     // 2. generate a resetToken which will expire in 24 hours & save it to DB
     // 3. construct the link and send it to the user's email
-
-
+    const { email } = req.body;
+    const user = await User.findOne({ email ,verified:true });
+    if (!user) {
+        return res.status(404).json({
+            error:  "Invalid email address"
+        });
+    }
+    user.resetToken = generateVerificationToken(email);
+    await user.save();
+    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.resetToken;
+    const name = user.firstName + ' ' + user.lastName;
+    let message = {
+        to: {name,email},
+        subject: 'Reset password ✔',
+        html: `<h1>Hello ${name},</h1><br>
+                Reset your password by clicking this link
+                <a href="${link}">Reset</a>`
+    };
+    console.log(message);
+    return res.status(200).json({
+        message:"Password reset link sent successfully"
+    })
 }
 
 
@@ -279,5 +299,6 @@ module.exports = {
     httpPostVerifyEmail,
     httpPostLogin,
     httpPostResendVerificationLink,
-    httpPostLogout
+    httpPostLogout,
+    httpPostSendPasswordResetLink
 }

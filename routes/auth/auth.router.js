@@ -11,6 +11,7 @@ authRouter.post('/verify/:token', authValidator.validateEmailVerificationToken, 
 authRouter.post('/login', authValidator.validateLoginInput, errorResolver(authController.httpPostLogin));
 authRouter.post('/resend', authValidator.validateEmailInput, errorResolver(authController.httpPostResendVerificationLink));
 authRouter.post('/logout', verifyRefreshToken, errorResolver(authController.httpPostLogout));
+authRouter.post('/reset', authValidator.validateEmailInput, errorResolver(authController.httpPostSendPasswordResetLink));
 
 
 module.exports = authRouter;
