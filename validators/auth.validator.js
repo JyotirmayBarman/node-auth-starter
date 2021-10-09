@@ -82,6 +82,23 @@ function validatePasswordMatch(req, res, next) {
     return res.status(400).json(error)
 }
 
+function validateUpdateProfileInput(req, res, next) {
+    const { firstName, lastName, email, password, bio } = req.body;
+
+    const updateProfileSchema = validator.object({
+        firstName: validator.string().required(),
+        lastName: validator.string().required(),
+        email: validator.string().email().required(),
+        password: validator.string().required(),
+        bio: validator.string()
+    });
+    const valid = updateProfileSchema.validate({ firstName, lastName, email, password, bio });
+    if (checkValidity(valid)) {
+        return next();
+    }
+    return res.status(400).json(error)
+}
+
 function checkValidity(valid) {
     if (valid.error) {
         error = {
@@ -98,5 +115,6 @@ module.exports = {
     validateEmailVerificationToken,
     validateLoginInput,
     validateEmailInput,
-    validatePasswordMatch
+    validatePasswordMatch,
+    validateUpdateProfileInput
 }
