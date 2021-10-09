@@ -36,7 +36,7 @@ function validateEmailVerificationToken(req, res, next) {
     }
 }
 
-function validateLoginInput(req,res,next) {
+function validateLoginInput(req, res, next) {
     const { email, password, remember } = req.body;
 
     const loginInputSchema = validator.object({
@@ -57,15 +57,30 @@ function validateLoginInput(req,res,next) {
 function validateEmailInput(req, res, next) {
     const { email } = req.body;
     const emailSchema = validator.object({
-        email:validator.string().email().required().label('Email')
+        email: validator.string().email().required().label('Email')
     });
-    const valid = emailSchema.validate({email});
-    if(checkValidity(valid)){
+    const valid = emailSchema.validate({ email });
+    if (checkValidity(valid)) {
         return next();
     }
     return res.status(400).json(error)
 }
 
+function validatePasswordMatch(req, res, next) {
+    const { password, confirmPassword } = req.body
+    const matchPasswordSchema = validator.object({
+        password: validator.string().required().label('Password'),
+        confirmPassword: validator.string().required().valid(validator.ref('password')).label('Password confirmation').messages({
+            'any.only': "Password confirmation must match password"
+        })
+    });
+
+    const valid = matchPasswordSchema.validate({ password, confirmPassword });
+    if (checkValidity(valid)) {
+        return next();
+    }
+    return res.status(400).json(error)
+}
 
 function checkValidity(valid) {
     if (valid.error) {
@@ -82,5 +97,6 @@ module.exports = {
     validateRegistrationInput,
     validateEmailVerificationToken,
     validateLoginInput,
-    validateEmailInput
+    validateEmailInput,
+    validatePasswordMatch
 }
