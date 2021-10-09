@@ -1,6 +1,7 @@
 const User = require('../../models/users/users.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const redis = require('../../services/databases/redis')
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
  * Which means here all the data are clean and no need to validate again
@@ -90,8 +91,40 @@ async function httpPostLogin(req, res) {
     // 6. else if remember option is true
     // 7. Then create a refresh token & store in redis DB which will (never or take much time) to expire
     // 8. send a strict same-site cookie to the browser with the token
-
-
+    const { email, password, remember } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(400).json({
+            error: "Invalid username or password"
+        });
+    }
+    if (!user.verified) {
+        return res.status(401).json({ error: "Email address must be verified before logging in" })
+    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+        return res.status(400).json({ error: "Invalid username or password" })
+    }
+    const { firstName, lastName, _id, role } = user;
+    const expiry = remember ? 30 * 24 * 60 * 60 : 24 * 60 * 60;
+    const token = generateRefreshToken({ _id, role }, expiry);
+    redis.SET(`${user._id}`, token, 'ex', expiry);
+    return res.status(200).cookie('token', token, {
+        sameSite: 'strict',
+        path: '/',
+        expires: new Date(new Date().getTime() + expiry * 1000),
+        httpOnly: true,
+        secure: false
+    }).json({
+        message: "Logged in successfully",
+        user: {
+            _id,
+            email,
+            firstName,
+            lastName,
+            role
+        }
+    });
 }
 
 /* handles resending verification link to email */
@@ -187,7 +220,7 @@ async function httpPatchUpdateEmailVerify(req, res) {
 //* Other helper functions *//
 
 /* Generates jwt refresh token */
-function generateRefreshToken(data, expiry) {
+function generateRefreshToken(data, expiry = null) {
     let token;
     if (expiry) {
         token = jwt.sign({ data }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: expiry });
@@ -207,5 +240,6 @@ function generateVerificationToken(data) {
 
 module.exports = {
     httpPostRegister,
-    httpPostVerifyEmail
+    httpPostVerifyEmail,
+    httpPostLogin
 }
