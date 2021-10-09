@@ -15,6 +15,7 @@ authRouter.post('/resend', authValidator.validateEmailInput, errorResolver(authC
 authRouter.post('/logout', verifyRefreshToken, errorResolver(authController.httpPostLogout));
 authRouter.post('/reset', authValidator.validateEmailInput, errorResolver(authController.httpPostSendPasswordResetLink));
 authRouter.patch('/reset/:token', authValidator.validatePasswordMatch, authValidator.validateEmailVerificationToken, errorResolver(authController.httpPatchResetPassword));
+authRouter.patch('/update',verifyRefreshToken, authValidator.validateUpdateProfileInput,errorResolver(authController.httpPatchUpdateProfile));
 
 
 module.exports = authRouter;

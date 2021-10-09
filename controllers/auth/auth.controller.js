@@ -275,7 +275,62 @@ async function httpPatchUpdateProfile(req, res) {
     // 6. Then send the verfication link to new email
     // 7. change other details without any condition
     // 8. Lastly save the user & return success
-
+    const { firstName, lastName, email, password, bio } = req.body;
+    const id = req.userId;
+    if (!id) {
+        return res.status(401).json({
+            error: "You are not authorized to make this request"
+        })
+    }
+    const user = await User.findOne({ _id: id })
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+        return res.status(400).json({
+            error: "Invalid password"
+        })
+    }
+    let change = 0, emailChange = 0;
+    if (bio) {
+        user.bio = bio;
+        change++;
+    }
+    if (user.firstName != firstName) {
+        user.firstName = firstName;
+        change++;
+    }
+    if (user.lastName != lastName) {
+        user.lastName = lastName;
+        change++;
+    }
+    if (user.email != email) {
+        user.newEmail = email;
+        user.verifyToken = generateVerificationToken(email);
+        const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
+        const name = user.firstName + ' ' + user.lastName;
+        let message = {
+            to: { name, email },
+            subject: 'Verify email address ✔',
+            html: `<h1>Hello ${name} ,</h1><br>
+                    We are thrilled to have you on board<br>
+                    Please verify your email by clicking this button below <br>
+                    <a href="${link}">Verify</a>`
+        };
+        //TODO: SEND ACTUAL MAIL for now jus log to the console
+        console.log(message);
+        change++;
+        emailChange++;
+    }
+    if (change) {
+        await user.save();
+    }
+    if (emailChange) {
+        return res.status(200).json({
+            message: "Profile updated & verify link sent to new email address"
+        })
+    }
+    return res.status(200).json({
+        message: "Profile updated successfully"
+    })
 
 }
 
@@ -324,5 +379,6 @@ module.exports = {
     httpPostLogout,
     httpPostSendPasswordResetLink,
     httpPatchResetPassword,
-    httpGetLoggedInUser
+    httpGetLoggedInUser,
+    httpPatchUpdateProfile
 }
