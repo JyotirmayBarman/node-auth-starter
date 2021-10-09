@@ -335,16 +335,30 @@ async function httpPatchUpdateProfile(req, res) {
 }
 
 /* handles email updation if anyone request for */
-async function httpPatchUpdateEmailVerify(req, res) {
+async function httpPatchUpdateEmailVerification(req, res) {
 
     //****** ALGORITHM*******//
     // 1. extract verification token from request parameters
     // 2. Check if verify token exists in the DB with the newEmail option
     // 3. If doesn't then return error
-    // 4. else check if the token is expired or not with jwt 
+    // 4. else check if the token is expired or not with jwt (it is already prechecked)
     // 5. if expired then return error
-    // 5. otherwise set the newEmail as user's email & remove verifytoken from DB & return success
-
+    // 5. otherwise set the newEmail as user's email & remove verifytoken & newEmail from DB & return success
+    const token = req.params.token;
+    const user = await User.findOne({ verifyToken: token, newEmail: { $ne: null } });
+    if (!user) {
+        return res.status(404).json({
+            error: "Invalid verfication link or it may be expired"
+        })
+    }
+    user.email = user.newEmail;
+    user.newEmail = null;
+    user.verifyToken = null;
+    redis.DEL(`${user._id}`);
+    await user.save();
+    return res.status(200).json({
+        message: "Email address successfully updated"
+    })
 
 }
 
@@ -380,5 +394,6 @@ module.exports = {
     httpPostSendPasswordResetLink,
     httpPatchResetPassword,
     httpGetLoggedInUser,
-    httpPatchUpdateProfile
+    httpPatchUpdateProfile,
+    httpPatchUpdateEmailVerification
 }
