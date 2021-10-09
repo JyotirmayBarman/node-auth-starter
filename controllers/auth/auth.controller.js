@@ -1,3 +1,6 @@
+const User = require('../../models/users/users.model');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
  * Which means here all the data are clean and no need to validate again
@@ -19,6 +22,36 @@ async function httpPostRegister(req, res) {
     // 5. create a new user in the DB 
     // 6. create jwt verification token & save it to the DB to expire in 24 hours
     // 7. create verification link & sent to user's email & return success
+    const { firstName, lastName, email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+        return res.status(400).json({ error: 'User already exists with this email address' })
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const verifyToken = generateVerificationToken(email);
+    await User.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        verifyToken
+    });
+
+    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
+    const name = firstName + ' ' + lastName;
+    let message = {
+        to: { name, email },
+        subject: 'Verify email address ✔',
+        html: `<h1>Hello ${name} ,</h1><br>
+                We are thrilled to have you on board<br>
+                Please verify your email by clicking this button below <br>
+                <a href="${link}">Verify</a>`
+    };
+
+    //TODO: SEND ACTUAL MAIL for now jus log to the console
+    console.log(message);
+
+    return res.status(201).json({ meaage: "Successfully registered" });
 }
 
 
