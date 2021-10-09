@@ -6,6 +6,8 @@ const verifyRefreshToken = require('../../middlewares/verifyRefreshToken');
 const authValidator = require('../../validators/auth.validator')
 
 
+authRouter.get('/user', verifyRefreshToken, errorResolver(authController.httpGetLoggedInUser));
+
 authRouter.post('/register', authValidator.validateRegistrationInput, errorResolver(authController.httpPostRegister));
 authRouter.post('/verify/:token', authValidator.validateEmailVerificationToken, errorResolver(authController.httpPostVerifyEmail));
 authRouter.post('/login', authValidator.validateLoginInput, errorResolver(authController.httpPostLogin));

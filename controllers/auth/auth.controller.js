@@ -248,6 +248,17 @@ async function httpGetLoggedInUser(req, res) {
     // 2. find user details using userId 
     // 3. If details found retun user details with success
     // 4. Else return error
+    const id = req.userId;
+    const user = await User.findOne({ _id: id, verified: true }, 'firstName lastName email role');
+    if (!user) {
+        return res.status(404).json({
+            error: "Invalid refresh token or it may be expired"
+        });
+    }
+    return res.status(200).json({
+        message: "you are logged in",
+        user
+    })
 
 }
 
@@ -312,5 +323,6 @@ module.exports = {
     httpPostResendVerificationLink,
     httpPostLogout,
     httpPostSendPasswordResetLink,
-    httpPatchResetPassword
+    httpPatchResetPassword,
+    httpGetLoggedInUser
 }
