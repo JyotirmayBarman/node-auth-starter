@@ -2,6 +2,7 @@ const User = require('../../models/users/users.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const redis = require('../../services/databases/redis')
+const mailer = require('../../services/email/mailer')
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
  * Which means here all the data are clean and no need to validate again
@@ -49,10 +50,10 @@ async function httpPostRegister(req, res) {
                 <a href="${link}">Verify</a>`
     };
 
-    //TODO: SEND ACTUAL MAIL for now jus log to the console
-    console.log(message);
+    //* Email sender
+    mailer.sendMail(message);
 
-    return res.status(201).json({ message: "Successfully registered" });
+    return res.status(201).json({ message: "Registered & verification link sent to email address" });
 }
 
 
@@ -155,8 +156,8 @@ async function httpPostResendVerificationLink(req, res) {
                 <a href="${link}">Verify</a>`
     };
 
-    //TODO: SEND ACTUAL MAIL for now jus log to the console
-    console.log(message);
+    //* Email sender
+    mailer.sendMail(message);
 
     return res.status(200).json({
         message: "Verification link resent successfully"
@@ -207,7 +208,8 @@ async function httpPostSendPasswordResetLink(req, res) {
                 Reset your password by clicking this link
                 <a href="${link}">Reset</a>`
     };
-    console.log(message);
+    //* Email sender
+    mailer.sendMail(message);
     return res.status(200).json({
         message: "Password reset link sent successfully"
     })
@@ -325,8 +327,8 @@ async function httpPatchUpdateProfile(req, res) {
                     Please verify your email by clicking this button below <br>
                     <a href="${link}">Verify</a>`
         };
-        //TODO: SEND ACTUAL MAIL for now jus log to the console
-        console.log(message);
+        //* Email sender
+        mailer.sendMail(message);
         change++;
         emailChange++;
     }
