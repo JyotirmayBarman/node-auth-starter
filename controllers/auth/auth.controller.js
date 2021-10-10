@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const redis = require('../../services/databases/redis')
 const mailer = require('../../services/email/mailer')
+require('dotenv').config();
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
  * Which means here all the data are clean and no need to validate again
@@ -292,13 +293,13 @@ async function httpPatchUpdateProfile(req, res) {
         })
     }
     let change = 0, emailChange = 0;
-    if(req.file){
+    if (req.file) {
         const file = req.file;
         const fs = require("fs");
         const path = require("path");
         let fileName = 'avatar' + '-' + Date.now() + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
-        fs.writeFileSync(path.join(__dirname,'../','../','uploads',fileName), file.buffer);
-        const link = 'http://localhost:8000/' + fileName;
+        fs.writeFileSync(path.join(__dirname, '../', '../', 'uploads', fileName), file.buffer);
+        const link = `http://localhost:${process.env.PORT}/` + fileName;
         user.avatar = link;
         change++;
     }
