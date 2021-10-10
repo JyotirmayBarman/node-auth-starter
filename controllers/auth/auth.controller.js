@@ -39,7 +39,8 @@ async function httpPostRegister(req, res) {
         verifyToken
     });
 
-    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
+    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
+    const link = 'http://localhost:8000/auth/verify?token=' + verifyToken;
     const name = firstName + ' ' + lastName;
     let message = {
         to: { name, email },
@@ -145,7 +146,8 @@ async function httpPostResendVerificationLink(req, res) {
     }
     user.verifyToken = generateVerificationToken(user.email);
     await user.save();
-    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.verifyToken;
+    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.verifyToken;
+    const link = 'http://localhost:8000/auth/verify?token=' + user.verifyToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -199,7 +201,8 @@ async function httpPostSendPasswordResetLink(req, res) {
     }
     user.resetToken = generateVerificationToken(email);
     await user.save();
-    const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/reset/' + user.resetToken;
+    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/reset/' + user.resetToken;
+    const link = 'http://localhost:8000/auth/reset?token=' + user.resetToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -317,7 +320,8 @@ async function httpPatchUpdateProfile(req, res) {
     if (user.email != email) {
         user.newEmail = email;
         user.verifyToken = generateVerificationToken(email);
-        const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
+        // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
+        const link = 'http://localhost:8000/auth/update/verify?token=' + user.verifyToken;
         const name = user.firstName + ' ' + user.lastName;
         let message = {
             to: { name, email },
