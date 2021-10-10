@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const mainRouter = require('./routes/main.router');
 const cookie = require('cookie-parser');
@@ -11,6 +12,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookie());
+
+app.use(express.static(path.join(__dirname, 'uploads')))
 
 app.use(mainRouter);
 

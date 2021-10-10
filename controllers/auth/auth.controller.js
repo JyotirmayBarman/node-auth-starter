@@ -249,7 +249,7 @@ async function httpGetLoggedInUser(req, res) {
     // 3. If details found retun user details with success
     // 4. Else return error
     const id = req.userId;
-    const user = await User.findOne({ _id: id, verified: true }, 'firstName lastName email role');
+    const user = await User.findOne({ _id: id, verified: true }, 'firstName lastName email role bio avatar');
     if (!user) {
         return res.status(404).json({
             error: "Invalid refresh token or it may be expired"
@@ -290,6 +290,16 @@ async function httpPatchUpdateProfile(req, res) {
         })
     }
     let change = 0, emailChange = 0;
+    if(req.file){
+        const file = req.file;
+        const fs = require("fs");
+        const path = require("path");
+        let fileName = 'avatar' + '-' + Date.now() + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+        fs.writeFileSync(path.join(__dirname,'../','../','uploads',fileName), file.buffer);
+        const link = 'http://localhost:8000/' + fileName;
+        user.avatar = link;
+        change++;
+    }
     if (bio) {
         user.bio = bio;
         change++;
