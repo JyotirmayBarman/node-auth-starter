@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const redis = require('../../services/databases/redis')
 const mailer = require('../../services/email/mailer')
+require('dotenv').config();
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
  * Which means here all the data are clean and no need to validate again
@@ -40,7 +41,7 @@ async function httpPostRegister(req, res) {
     });
 
     // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
-    const link = 'http://localhost:8000/auth/verify?token=' + verifyToken;
+    const link = `http://localhost:${process.env.PORT}/auth/verify?token=` + verifyToken;
     const name = firstName + ' ' + lastName;
     let message = {
         to: { name, email },
@@ -147,7 +148,7 @@ async function httpPostResendVerificationLink(req, res) {
     user.verifyToken = generateVerificationToken(user.email);
     await user.save();
     // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.verifyToken;
-    const link = 'http://localhost:8000/auth/verify?token=' + user.verifyToken;
+    const link = `http://localhost:${process.env.PORT}/auth/verify?token=` + user.verifyToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -202,7 +203,7 @@ async function httpPostSendPasswordResetLink(req, res) {
     user.resetToken = generateVerificationToken(email);
     await user.save();
     // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/reset/' + user.resetToken;
-    const link = 'http://localhost:8000/auth/reset?token=' + user.resetToken;
+    const link = `http://localhost:${process.env.PORT}/auth/reset?token=` + user.resetToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -295,13 +296,13 @@ async function httpPatchUpdateProfile(req, res) {
         })
     }
     let change = 0, emailChange = 0;
-    if(req.file){
+    if (req.file) {
         const file = req.file;
         const fs = require("fs");
         const path = require("path");
         let fileName = 'avatar' + '-' + Date.now() + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
-        fs.writeFileSync(path.join(__dirname,'../','../','uploads',fileName), file.buffer);
-        const link = 'http://localhost:8000/' + fileName;
+        fs.writeFileSync(path.join(__dirname, '../', '../', 'uploads', fileName), file.buffer);
+        const link = `http://localhost:${process.env.PORT}/` + fileName;
         user.avatar = link;
         change++;
     }
@@ -321,7 +322,7 @@ async function httpPatchUpdateProfile(req, res) {
         user.newEmail = email;
         user.verifyToken = generateVerificationToken(email);
         // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
-        const link = 'http://localhost:8000/auth/update/verify?token=' + user.verifyToken;
+        const link = `http://localhost:${process.env.PORT}/auth/update/verify?token=` + user.verifyToken;
         const name = user.firstName + ' ' + user.lastName;
         let message = {
             to: { name, email },
