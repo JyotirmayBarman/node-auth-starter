@@ -30,9 +30,9 @@ function validateEmailVerificationToken(req, res, next) {
         if (valid) {
             return next();
         }
-        return res.status(400).json({ message: "Invalid verification link or it maybe expired" })
+        return res.status(400).json({ error: "Invalid verification link or it maybe expired" })
     } catch (error) {
-        return res.status(400).json({ message: "Invalid verification link or it maybe expired" })
+        return res.status(400).json({ error: "Invalid verification link or it maybe expired" })
     }
 }
 
