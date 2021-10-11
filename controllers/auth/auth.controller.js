@@ -110,7 +110,7 @@ async function httpPostLogin(req, res) {
     const { firstName, lastName, _id, role } = user;
     const expiry = remember ? 30 * 24 * 60 * 60 : 24 * 60 * 60;
     const token = generateRefreshToken({ _id, role }, expiry);
-    redis.SET(`${user._id}`, token, 'ex', expiry);
+    await redis.SET(`${user._id}`, token, {EX:expiry});
     return res.status(200).cookie('token', token, {
         sameSite: 'strict',
         path: '/',
@@ -174,7 +174,7 @@ async function httpPostLogout(req, res) {
     //// 2. and it sets userId to req for us
     //// 3. If the userId exists in redis DB where we keep track of logged in users then
     // 2. remove userId from the redis DB & return a  cookie with token = null 
-    redis.DEL(req.userId);
+    await redis.DEL(req.userId);
     return res.status(200).cookie('token', 'null', {
         sameSite: 'strict',
         path: '/',
@@ -367,7 +367,7 @@ async function httpPatchUpdateEmailVerification(req, res) {
     user.email = user.newEmail;
     user.newEmail = null;
     user.verifyToken = null;
-    redis.DEL(`${user._id}`);
+    await redis.DEL(`${user._id}`);
     await user.save();
     return res.status(200).json({
         message: "Email address successfully updated"
