@@ -1,5 +1,12 @@
-# \# node-auth-starter
+# \# node-auth-starter 
+  
 Fully featured authenication template for node js (with frontend scaffolding)
+
+<div align="center"> 
+  
+  ![AUTH-STARTER](https://user-images.githubusercontent.com/56916274/136815017-92e5f366-23c5-490d-bae3-b5db06befb7f.png)
+ 
+</div>
 
 # \# USAGE 🚀🚀🚀
 
@@ -50,30 +57,30 @@ SMTP_PASSWORD=yourpassw0rd
   ```
   **CHANGE THE ENV VARIABLES**
   ```js
-      PORT=8000
+PORT=8000
 
-      MONGO_URL=mongodb://localhost:27017/node_auth
+MONGO_URL=mongodb://localhost:27017/node_auth
 
-      # configure as your need : `redis://[[username][:password]@][host][:port][/db-number]`
-      REDIS_URL=redis://localhost:6379
+# configure as your need : `redis://[[username][:password]@][host][:port][/db-number]`
+REDIS_URL=redis://localhost:6379
 
-      REFRESH_TOKEN_SECRET=M@iR3fr3sHt0KenS3cR3T
-      VERIFY_EMAIL_SECRET=v3riFYem@@iLsssecret
+REFRESH_TOKEN_SECRET=M@iR3fr3sHt0KenS3cR3T
+VERIFY_EMAIL_SECRET=v3riFYem@@iLsssecret
 
-      MAIL_ENV=smtp
-      SMTP_HOST=your-smptp-relay-host
-      SMTP_PORT=587
-      SMTP_USERNAME=your@username
-      SMTP_PASSWORD=yourpassw0rd
+MAIL_ENV=smtp
+SMTP_HOST=your-smptp-relay-host
+SMTP_PORT=587
+SMTP_USERNAME=your@username
+SMTP_PASSWORD=yourpassw0rd
   ```
    **RUN THE DEV SERVER**
-   ```js
-      npm run dev
-   ```
+
+   `npm run dev`
+
    **RUN THE PRODUCTION SERVER**
-   ```js
-      npm start
-   ```
+
+   `npm start`
+   
 **THERE ARE TWO VERSIONS AVAILABLE**
-1. with frontend scaffolding : [main](../../tree/main) branch
-2. only the backend api      :  [backend-only](../../tree/backend-only) branch
+1. [main](../../tree/main) : Only API is here
+2. [with-scaffolding](../../tree/backend-only) : Vue frontend scaffolding included
