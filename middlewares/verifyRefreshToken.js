@@ -14,18 +14,14 @@ async function verifyRefreshToken(req,res,next){
             return res.status(401).json({error:"Refresh token invalid or expired"})
         }
         const id = valid.data._id;
-        redis.GET(id,(err,value)=>{
-            if(err){
-                console.log(err);
-                return res.status(500).json({error:"Internal server error"})
-            }
-            if(token == value){
-                req.userId = id;
-                next();
-            }else{
-                return res.status(400).json({error:"Refresh token invalid or expired"})
-            }
-        })
+        const value = await redis.GET(id);
+        if(token == value){
+            req.userId = id;
+            next();
+        }
+        else{
+            return res.status(400).json({error:"Refresh token invalid or expired"})
+        }
     } catch (error) {
         return res.status(401).json({error:"Refresh token invalid or expired"})
     }
