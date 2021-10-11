@@ -1,7 +1,7 @@
-# node-auth-starter
-Fully featured authenication template for node js
+# \# node-auth-starter
+Fully featured authenication template for node js (with frontend scaffolding)
 
-## USAGE 🚀🚀🚀
+# \# USAGE 🚀🚀🚀
 
 |  METHOD  |         ROUTE            |                            EXPECTS                          |        DETAILS       |
 |----------|--------------------------|-------------------------------------------------------------|----------------------|
@@ -16,7 +16,7 @@ Fully featured authenication template for node js
 | `PATCH`  |  `/api/v1/update/verify/:token` | `token` : Email updation verification token | *Updates email address* |
 | `GET`    |  `/user`                 | `token` : Refresh token through cookie | *Returns the logged in user* |
 
-## The required env variables
+# \# The required env variables
 
 ```json
 
@@ -40,3 +40,40 @@ SMTP_PASSWORD=yourpassw0rd
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=Redis)
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=MongoDB)
 ![NOTE](https://via.placeholder.com/500x50/000000/FF0000?text=BOTH+ARE+REQUIRED+FOR+IT+TO+BE+FUNCTIONAL)
+
+# \# Getting Started
+**CLONE THE REPO**
+  ```bash
+  git clone https://github.com/JyotirmayBarman/node-auth-starter.git
+  cd node-auth-starter
+  npm install
+  ```
+  **CHANGE THE ENV VARIABLES**
+  ```js
+      PORT=8000
+
+      MONGO_URL=mongodb://localhost:27017/node_auth
+
+      # configure as your need : `redis://[[username][:password]@][host][:port][/db-number]`
+      REDIS_URL=redis://localhost:6379
+
+      REFRESH_TOKEN_SECRET=M@iR3fr3sHt0KenS3cR3T
+      VERIFY_EMAIL_SECRET=v3riFYem@@iLsssecret
+
+      MAIL_ENV=smtp
+      SMTP_HOST=your-smptp-relay-host
+      SMTP_PORT=587
+      SMTP_USERNAME=your@username
+      SMTP_PASSWORD=yourpassw0rd
+  ```
+   **RUN THE DEV SERVER**
+   ```js
+      npm run dev
+   ```
+   **RUN THE PRODUCTION SERVER**
+   ```js
+      npm start
+   ```
+**THERE ARE TWO VERSIONS AVAILABLE**
+1. with frontend scaffolding : [main](../../tree/main) branch
+2. only the backend api      :  [backend-only](../../tree/backend-only) branch
