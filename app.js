@@ -6,11 +6,10 @@ const cookie = require('cookie-parser');
 const cors = require('cors');
 const { errorHandler } = require('./middlewares/globalErrorHandler')
 
-const PORT=process.env.PORT || 8000;
-
 const app = express();
+
 app.use(cors({
-    origin: `http://localhost:${PORT}`,
+    origin: process.env.CORS_URLS.split(','),
     credentials:true
 }));
 app.use(express.json());
