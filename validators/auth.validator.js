@@ -16,7 +16,6 @@ function validateRegistrationInput(req, res, next) {
         })
     });
     const valid = registerInputSchema.validate({ firstName, lastName, email, password, confirmPassword }, { abortEarly: true });
-    console.log(valid);
     if (checkValidity(valid)) {
         return next();
     }
@@ -103,7 +102,7 @@ function checkValidity(valid) {
     if (valid.error) {
         error = {
             error: valid.error.details[0].message,
-            field: valid.error.details[0].path
+            field: valid.error.details[0].path[0]
         }
         return false;
     }
