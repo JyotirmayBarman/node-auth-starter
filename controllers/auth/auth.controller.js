@@ -37,7 +37,8 @@ async function httpPostRegister(req, res) {
         lastName,
         email,
         password: hashedPassword,
-        verifyToken
+        verifyToken,
+        avatar:`https://avatars.dicebear.com/api/bottts/${firstName[0].toLowerCase()}${lastName[0].toLowerCase()}.svg`
     });
 
     const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
@@ -289,7 +290,8 @@ async function httpPatchUpdateProfile(req, res) {
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
         return res.status(400).json({
-            error: "Invalid password"
+            error: "Invalid password",
+            field: "password"
         })
     }
     let change = 0, emailChange = 0;
@@ -316,6 +318,13 @@ async function httpPatchUpdateProfile(req, res) {
         change++;
     }
     if (user.email != email) {
+        const existingUser = await User.findOne({email,verified:true});
+        if(existingUser){
+            return res.status(400).json({
+                error:'Email id already in use', 
+                field:'email'
+            });
+        }
         user.newEmail = email;
         user.verifyToken = generateVerificationToken(email);
         const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
