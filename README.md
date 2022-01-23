@@ -19,9 +19,9 @@ Fully featured authenication template for node js (api only)
 | `POST`   |  `/api/v1/auth/logout` | `token` : Refresh token through cookie | *Logs out an user* |
 | `POST`   |  `/api/v1/auth/reset` | `email` | *Sends password reset link to existing user's email id* |
 | `PATCH`  |  `/api/v1/reset/:token` | `token` : Reset token,`password`,<br>`confirmPassword` | *Resets password* |
-| `PATCH`  |  `/api/v1/update` | `avatar` : Optional avatar,<br>`token` : Refresh token through cookie,<br>`firstName`,`lastName`,`email`,`password`,| *Resets password* |
-| `PATCH`  |  `/api/v1/update/verify/:token` | `token` : Email updation verification token | *Updates email address* |
-| `GET`    |  `/user`                 | `token` : Refresh token through cookie | *Returns the logged in user* |
+| `PATCH`  |  `/api/v1/auth/update` | `avatar` : Optional avatar,<br>`token` : Refresh token through cookie,<br>`firstName`,`lastName`,`email`,`password`,| *Updates Profile* |
+| `PATCH`  |  `/api/v1/auth/update/verify/:token` | `token` : Email updation verification token | *Updates email address* |
+| `GET`    |  `/auth/user`                 | `token` : Refresh token through cookie | *Returns the logged in user* |
 
 # \# The required env variables
 
