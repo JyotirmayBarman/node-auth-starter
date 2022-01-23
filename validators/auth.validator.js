@@ -8,7 +8,12 @@ function validateRegistrationInput(req, res, next) {
         firstName: validator.string().required().label('First name'),
         lastName: validator.string().required().label('Last name'),
         email: validator.string().email().required().label('Email'),
-        password: validator.string().min(6).max(1024).required().label('Password'),
+        password: validator.string().regex(/[a-z]/,'lowercase').message("Password must consist an lowercase")
+                .regex(/[A-Z]/,'uppercase').message("Password must consist an uppercase")
+                .regex(/[0-9]/,'digit').message("Password must consist a digit")
+                .regex(/.{8,}/,'mineight').message("Password must be atleast 8 chars long")
+                .regex(/\W|_/,'special').message("Password must consist a special character")
+                .required().label('Password'),
         confirmPassword: validator.string().required().valid(validator.ref('password')).label("Confirmation Password").messages({
             'string.base': 'Confirmation password must be a string',
             'any.required': 'Confirmation password is required',
@@ -40,7 +45,7 @@ function validateLoginInput(req, res, next) {
 
     const loginInputSchema = validator.object({
         email: validator.string().email().required().label('Email'),
-        password: validator.string().min(6).max(1024).required().label('Password'),
+        password: validator.string().required().label('Password'),
         remember: validator.boolean().default(false).label('Remember')
     });
 
