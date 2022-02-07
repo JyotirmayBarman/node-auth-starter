@@ -46,7 +46,7 @@ SMTP_PASSWORD=yourpassw0rd
 ```
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=Redis)
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=MongoDB)
-![NOTE](https://via.placeholder.com/500x50/000000/FF0000?text=BOTH+ARE+REQUIRED+FOR+IT+TO+BE+FUNCTIONAL)
+![NOTE](https://via.placeholder.com/450x50/000000/FF0000?text=BOTH+ARE+REQUIRED+FOR+IT+TO+BE+FUNCTIONAL)
 
 # \# Getting Started
 **CLONE THE REPO**
