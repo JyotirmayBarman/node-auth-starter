@@ -1,10 +1,10 @@
 require('dotenv').config();
 const path = require('path')
 const express = require('express');
-const mainRouter = require('./routes/main.router');
+const mainRouter = require('./api/routes/main.router');
 const cookie = require('cookie-parser');
 const cors = require('cors');
-const { errorHandler } = require('./middlewares/globalErrorHandler')
+const { errorHandler } = require('./api/middlewares/globalErrorHandler')
 
 const app = express();
 

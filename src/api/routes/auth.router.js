@@ -1,11 +1,11 @@
 const express = require('express');
 const authRouter = express.Router();
-const authController = require('../../controllers/auth/auth.controller');
-const { errorResolver } = require('../../middlewares/globalErrorHandler');
-const verifyRefreshToken = require('../../middlewares/verifyRefreshToken');
-const authValidator = require('../../validators/auth.validator')
+const authController = require('../controllers/auth.controller');
+const { errorResolver } = require('../middlewares/globalErrorHandler');
+const verifyRefreshToken = require('../middlewares/verifyRefreshToken');
+const authValidator = require('../validators/auth.validator')
 const multer = require('multer');
-const { validateImageInput } = require('../../validators/mime.validator');
+const { validateImageInput } = require('../validators/mime.validator');
 const upload = multer({
     storage:multer.memoryStorage()
 })
