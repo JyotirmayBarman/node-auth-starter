@@ -20,7 +20,7 @@ authRouter.post('/logout', verifyRefreshToken, errorResolver(authController.http
 authRouter.post('/reset', authValidator.validateEmailInput, errorResolver(authController.httpPostSendPasswordResetLink));
 
 authRouter.patch('/reset/:token', authValidator.validatePasswordMatch, authValidator.validateEmailVerificationToken, errorResolver(authController.httpPatchResetPassword));
-authRouter.patch('/update', verifyRefreshToken,upload.single('avatar'),validateImageInput, authValidator.validateUpdateProfileInput, errorResolver(authController.httpPatchUpdateProfile));
+authRouter.patch('/update', verifyRefreshToken,upload.single('avatar'),validateImageInput('avatar'), authValidator.validateUpdateProfileInput, errorResolver(authController.httpPatchUpdateProfile));
 authRouter.patch('/update/verify/:token', authValidator.validateEmailVerificationToken, errorResolver(authController.httpPatchUpdateEmailVerification));
 
 

@@ -19,9 +19,9 @@ Fully featured authenication template for node js (with frontend scaffolding)
 | `POST`   |  `/api/v1/auth/logout` | `token` : Refresh token through cookie | *Logs out an user* |
 | `POST`   |  `/api/v1/auth/reset` | `email` | *Sends password reset link to existing user's email id* |
 | `PATCH`  |  `/api/v1/reset/:token` | `token` : Reset token,`password`,<br>`confirmPassword` | *Resets password* |
-| `PATCH`  |  `/api/v1/update` | `avatar` : Optional avatar,<br>`token` : Refresh token through cookie,<br>`firstName`,`lastName`,`email`,`password`,| *Resets password* |
-| `PATCH`  |  `/api/v1/update/verify/:token` | `token` : Email updation verification token | *Updates email address* |
-| `GET`    |  `/user`                 | `token` : Refresh token through cookie | *Returns the logged in user* |
+| `PATCH`  |  `/api/v1/auth/update` | `avatar` : Optional avatar,<br>`token` : Refresh token through cookie,<br>`firstName`,`lastName`,`email`,`password`,| *Updates Profile* |
+| `PATCH`  |  `/api/v1/auth/update/verify/:token` | `token` : Email updation verification token | *Updates email address* |
+| `GET`    |  `/api/v1/auth/user`                 | `token` : Refresh token through cookie | *Returns the logged in user* |
 
 # \# The required env variables
 
@@ -46,7 +46,7 @@ SMTP_PASSWORD=yourpassw0rd
 ```
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=Redis)
 ![NOTE](https://via.placeholder.com/163x50/000000/FF0000?text=MongoDB)
-![NOTE](https://via.placeholder.com/500x50/000000/FF0000?text=BOTH+ARE+REQUIRED+FOR+IT+TO+BE+FUNCTIONAL)
+![NOTE](https://via.placeholder.com/450x50/000000/FF0000?text=BOTH+ARE+REQUIRED+FOR+IT+TO+BE+FUNCTIONAL)
 
 # \# Getting Started
 **CLONE THE REPO**
@@ -83,4 +83,4 @@ SMTP_PASSWORD=yourpassw0rd
    
 **THERE ARE TWO VERSIONS AVAILABLE**
 1. [main](../../tree/main) : Only API is here
-2. [with-scaffolding](../../tree/backend-only) : Vue frontend scaffolding included
+2. [with-scaffolding](../../tree/with-scaffolding) : Vue frontend scaffolding included

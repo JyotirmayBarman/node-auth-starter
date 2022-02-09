@@ -7,7 +7,7 @@ const authRouter = require('./auth.router')
 mainRouter.use('/api/v1/auth',authRouter);
 
 mainRouter.get('/*',(req,res) => {
-    res.sendFile(path.join(__dirname,'../','public','index.html'));
+    res.sendFile(path.join(__dirname, '../', '../', '../', 'public', 'index.html'));
 })
 
 module.exports = mainRouter;

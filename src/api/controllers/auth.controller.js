@@ -37,11 +37,11 @@ async function httpPostRegister(req, res) {
         lastName,
         email,
         password: hashedPassword,
-        verifyToken
+        verifyToken,
+        avatar:`https://avatars.dicebear.com/api/bottts/${firstName[0].toLowerCase()}${lastName[0].toLowerCase()}.svg`
     });
 
-    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + verifyToken;
-    const link = `http://localhost:${process.env.PORT}/auth/verify?token=` + verifyToken;
+    const link = req.get('origin') + '/auth/verify-email?token=' + verifyToken;
     const name = firstName + ' ' + lastName;
     let message = {
         to: { name, email },
@@ -108,7 +108,7 @@ async function httpPostLogin(req, res) {
     if (!match) {
         return res.status(400).json({ error: "Invalid username or password" })
     }
-    const { firstName, lastName, _id, role } = user;
+    const { firstName, lastName, _id, role, avatar } = user;
     const expiry = remember ? 30 * 24 * 60 * 60 : 24 * 60 * 60;
     const token = generateRefreshToken({ _id, role }, expiry);
     await redis.SET(`${user._id}`, token, {EX:expiry});
@@ -125,7 +125,8 @@ async function httpPostLogin(req, res) {
             email,
             firstName,
             lastName,
-            role
+            role,
+            avatar
         }
     });
 }
@@ -147,8 +148,7 @@ async function httpPostResendVerificationLink(req, res) {
     }
     user.verifyToken = generateVerificationToken(user.email);
     await user.save();
-    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/verify/' + user.verifyToken;
-    const link = `http://localhost:${process.env.PORT}/auth/verify?token=` + user.verifyToken;
+    const link = req.get('origin') + '/auth/verify-email?token=' + user.verifyToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -202,8 +202,7 @@ async function httpPostSendPasswordResetLink(req, res) {
     }
     user.resetToken = generateVerificationToken(email);
     await user.save();
-    // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/reset/' + user.resetToken;
-    const link = `http://localhost:${process.env.PORT}/auth/reset?token=` + user.resetToken;
+    const link = req.get('origin') + '/auth/reset-password?token=' + user.resetToken;
     const name = user.firstName + ' ' + user.lastName;
     let message = {
         to: { name, email },
@@ -292,7 +291,8 @@ async function httpPatchUpdateProfile(req, res) {
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
         return res.status(400).json({
-            error: "Invalid password"
+            error: "Invalid password",
+            field: "password"
         })
     }
     let change = 0, emailChange = 0;
@@ -319,10 +319,16 @@ async function httpPatchUpdateProfile(req, res) {
         change++;
     }
     if (user.email != email) {
+        const existingUser = await User.findOne({email,verified:true});
+        if(existingUser){
+            return res.status(400).json({
+                error:'Email id already in use', 
+                field:'email'
+            });
+        }
         user.newEmail = email;
         user.verifyToken = generateVerificationToken(email);
-        // const link = req.protocol + '://' + req.get('host') + req.baseUrl + '/update/verify/' + user.verifyToken;
-        const link = `http://localhost:${process.env.PORT}/auth/update/verify?token=` + user.verifyToken;
+        const link = req.get('origin') + '/auth/verify-email?utoken=' + user.verifyToken;
         const name = user.firstName + ' ' + user.lastName;
         let message = {
             to: { name, email },

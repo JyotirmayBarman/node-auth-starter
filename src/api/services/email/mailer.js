@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-let sendMail = ()=>{console.log("Invalid Email Configuration");}
+let sendMail = (msg)=>{console.log("\x1b[33m%s\x1b[0m",'\bWARNING: Logging to console, as no mailing service is configured');console.log(msg);}
 let transporter;
 
 if(process.env.MAIL_ENV == 'api'){
@@ -35,7 +35,7 @@ if(process.env.MAIL_ENV == 'api'){
         }   
     }
 }else {
-    console.log("Error: Provide A Valid mailing service");
+    console.log("\x1b[33m%s\x1b[0m","\bWARNING: No mailing service is configured hence mails will be console logged");
 }
 
 
