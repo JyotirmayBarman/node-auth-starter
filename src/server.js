@@ -1,9 +1,9 @@
 const http = require('http');
 const app = require('./app');
 require('dotenv').config();
-const redis = require('./services/databases/redis')
+const redis = require('./api/services/databases/redis')
 
-const mongo = require('./services/databases/mongo')
+const mongo = require('./api/services/databases/mongo')
 
 const PORT=process.env.PORT || 8000;
 

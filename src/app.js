@@ -1,10 +1,10 @@
 require('dotenv').config();
 const path = require('path')
 const express = require('express');
-const mainRouter = require('./routes/main.router');
+const mainRouter = require('./api/routes/main.router');
 const cookie = require('cookie-parser');
 const cors = require('cors');
-const { errorHandler } = require('./middlewares/globalErrorHandler')
+const { errorHandler } = require('./api/middlewares/globalErrorHandler')
 
 const PORT=process.env.PORT || 8000;
 
@@ -16,9 +16,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookie());
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname,'..', 'public')))
 
-app.use(express.static(path.join(__dirname, 'uploads')))
+app.use(express.static(path.join(__dirname,'..', 'uploads')))
 
 app.use(mainRouter);
 

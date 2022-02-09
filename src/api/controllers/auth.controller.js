@@ -1,8 +1,8 @@
-const User = require('../../models/users/users.model');
+const User = require('../models/users.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const redis = require('../../services/databases/redis')
-const mailer = require('../../services/email/mailer')
+const redis = require('../services/databases/redis')
+const mailer = require('../services/email/mailer')
 require('dotenv').config();
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
