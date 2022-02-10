@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const redis = require('../services/databases/redis')
+const redis = require('../../config/databases/redis')
 
 
 
