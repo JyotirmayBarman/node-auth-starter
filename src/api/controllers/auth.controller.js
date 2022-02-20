@@ -301,7 +301,7 @@ async function httpPatchUpdateProfile(req, res) {
         const fs = require("fs");
         const path = require("path");
         let fileName = 'avatar' + '-' + Date.now() + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
-        fs.writeFileSync(path.join(__dirname, '../', '../', 'uploads', fileName), file.buffer);
+        fs.writeFileSync(path.join(__dirname, '../', '../', '../', 'uploads', fileName), file.buffer);
         const link = `http://localhost:${process.env.PORT}/` + fileName;
         user.avatar = link;
         change++;
