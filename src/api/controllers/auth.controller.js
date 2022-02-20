@@ -1,8 +1,9 @@
 const User = require('../models/users.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const redis = require('../services/databases/redis')
-const mailer = require('../services/email/mailer')
+const redis = require('../../config/databases/redis')
+const mailer = require('../utils/mailer')
+const mailTypes = require('../utils/mail.types')
 require('dotenv').config();
 /********************************************************************************************************* 
  * User input data should be validated beforehand with validator middllwares in router
@@ -43,17 +44,9 @@ async function httpPostRegister(req, res) {
 
     const link = req.get('origin') + '/auth/verify-email?token=' + verifyToken;
     const name = firstName + ' ' + lastName;
-    let message = {
-        to: { name, email },
-        subject: 'Verify email address ✔',
-        html: `<h1>Hello ${name} ,</h1><br>
-                We are thrilled to have you on board<br>
-                Please verify your email by clicking this button below <br>
-                <a href="${link}">Verify</a>`
-    };
 
     //* Email sender
-    mailer.sendMail(message);
+    mailer.sendMail(email, name, link, mailTypes.welcome);
 
     return res.status(201).json({ message: "Registered & verification link sent to email address" });
 }
@@ -133,7 +126,7 @@ async function httpPostLogin(req, res) {
 
 /* handles resending verification link to email */
 async function httpPostResendVerificationLink(req, res) {
-    //****** ALGORITHM*******//
+    //****** ALGORITHM *******//
     // 1. extract email from req.body
     // 2. if already verified  then return error
     // 3. Otherwise generate verification token again & set it to expire in 24 hours
@@ -150,17 +143,9 @@ async function httpPostResendVerificationLink(req, res) {
     await user.save();
     const link = req.get('origin') + '/auth/verify-email?token=' + user.verifyToken;
     const name = user.firstName + ' ' + user.lastName;
-    let message = {
-        to: { name, email },
-        subject: 'Verify email address ✔',
-        html: `<h1>Hello ${name} ,</h1><br>
-                We are thrilled to have you on board<br>
-                Please verify your email by clicking this button below <br>
-                <a href="${link}">Verify</a>`
-    };
 
     //* Email sender
-    mailer.sendMail(message);
+    mailer.sendMail(email, name, link, mailTypes.welcome);
 
     return res.status(200).json({
         message: "Verification link resent successfully"
@@ -204,15 +189,10 @@ async function httpPostSendPasswordResetLink(req, res) {
     await user.save();
     const link = req.get('origin') + '/auth/reset-password?token=' + user.resetToken;
     const name = user.firstName + ' ' + user.lastName;
-    let message = {
-        to: { name, email },
-        subject: 'Reset password ✔',
-        html: `<h1>Hello ${name},</h1><br>
-                Reset your password by clicking this link
-                <a href="${link}">Reset</a>`
-    };
+    
     //* Email sender
-    mailer.sendMail(message);
+    mailer.sendMail(email, name, link, mailTypes.welcome);
+
     return res.status(200).json({
         message: "Password reset link sent successfully"
     })
@@ -330,16 +310,10 @@ async function httpPatchUpdateProfile(req, res) {
         user.verifyToken = generateVerificationToken(email);
         const link = req.get('origin') + '/auth/verify-email?utoken=' + user.verifyToken;
         const name = user.firstName + ' ' + user.lastName;
-        let message = {
-            to: { name, email },
-            subject: 'Verify email address ✔',
-            html: `<h1>Hello ${name} ,</h1><br>
-                    We are thrilled to have you on board<br>
-                    Please verify your email by clicking this button below <br>
-                    <a href="${link}">Verify</a>`
-        };
+
         //* Email sender
-        mailer.sendMail(message);
+        mailer.sendMail(email, name, link, mailTypes.welcome);
+
         change++;
         emailChange++;
     }

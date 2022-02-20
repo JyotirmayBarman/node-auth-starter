@@ -12,12 +12,12 @@ mongoose.connection.on('open',()=>{
 
 async function mongoConnect(){
     try {
-        await mongoose.connect(MONGO_URL,{
+       await mongoose.connect(MONGO_URL,{
             useNewUrlParser: true,
             useUnifiedTopology:true
         });
     } catch (error) {
-        console.log(error);
+        return false;
     }
 };
 

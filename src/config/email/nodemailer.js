@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-let sendMail = (msg)=>{console.log("\x1b[33m%s\x1b[0m",'\bWARNING: Logging to console, as no mailing service is configured');console.log(msg);}
+let send = (msg)=>{console.log("\x1b[33m%s\x1b[0m",'\bWARNING: Logging to console, as no mailing service is configured');console.log(msg);}
 let transporter;
 
 if(process.env.MAIL_ENV == 'api'){
@@ -19,16 +19,16 @@ if(process.env.MAIL_ENV == 'api'){
         }
     });
 
-    sendMail = async (message) => {    
+    send = async (message) => {    
         const msg = {
-            from:`Developerzilla <no-reply@developerzilla.com>`,
+            from:`${message.from.name} <${message.from.email}>`,
             to:`'${message.to.name}' <${message.to.email}>`,
             subject: message.subject,
             html: message.html,
         };
 
         try {  
-            const res = await transporter.sendMail(msg);
+            const res = await transporter.send(msg);
             console.log(res);
         } catch (error) {
             console.log(error);
@@ -41,5 +41,5 @@ if(process.env.MAIL_ENV == 'api'){
 
 
 module.exports = {
-    sendMail
+    send
 }
