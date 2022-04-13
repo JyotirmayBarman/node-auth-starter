@@ -4,7 +4,7 @@ Fully featured authenication template for node js (api only)
 
 <div align="center"> 
   
-  ![AUTH-STARTER](https://user-images.githubusercontent.com/56916274/136815017-92e5f366-23c5-490d-bae3-b5db06befb7f.png)
+  ![Authentication](https://user-images.githubusercontent.com/56916274/163147986-6a16e849-c590-4802-a493-405a863a7d6b.png)
  
 </div>
 
